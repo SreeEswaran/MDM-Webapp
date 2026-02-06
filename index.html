@@ -22,7 +22,17 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="card"><div class="grid">
+  <div class="card">  <div style="text-align:center;margin-bottom:12px;">
+    <div style="display:inline-block;padding:10px 20px;border-radius:14px;background:linear-gradient(135deg,#5b7cff,#7c8dff);color:#ffffff;font-weight:600;font-size:18px;letter-spacing:0.4px;box-shadow:0 6px 18px rgba(0,0,0,.25)">
+      MDM Calculator
+    </div>
+  </div><div style="text-align:center;margin-bottom:12px;">
+  <div style="display:inline-block;padding:10px 18px;border-radius:14px;background:linear-gradient(135deg,#5b7cff,#7c8dff);color:#fff;font-weight:600;font-size:18px;letter-spacing:.5px;box-shadow:0 6px 18px rgba(0,0,0,.25)">
+    MDM Calculator
+  </div>
+</div>
+
+<div class="grid">
   <div>
     <label>Enrollment (Total Kids)</label>
     <input id="enroll" type="number" min="1" />
@@ -162,7 +172,7 @@
     }
   }
 
-  /* Test cases:
+  /* Sample Test cases:
      1) Enrollment=100, Rice per kid=100g, Days=20 → 200kg → 8 bags
      2) Enrollment=50, Egg Phase1=4 → 200 eggs
      3) Enrollment=60, Chikki Phase2=5 → 300 chikkis
