@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mid Day Meal Calculator</title>
+<style>
+  :root{--bg:#0b1020;--card:#121833;--accent:#5b7cff;--muted:#9aa0c6}
+  *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto}
+  body{margin:0;background:linear-gradient(180deg,#0b1020,#0e1430);color:#eef1ff}
+  .wrap{max-width:760px;margin:12px auto;padding:10px}
+  .card{background:var(--card);border-radius:14px;padding:12px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  @media(max-width:520px){.grid{grid-template-columns:1fr}}
+  label{font-size:12px;color:var(--muted)}
+  input,select{width:100%;padding:8px 10px;border-radius:10px;border:1px solid #27306b;background:#0e1430;color:#fff;max-width:160px}
+  .section{display:none;margin-top:10px}
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  th,td{border:1px solid #27306b;padding:8px;text-align:center}
+  th{background:#0e1430}
+  .btn{margin-top:10px;background:var(--accent);border:none;color:#fff;padding:10px 14px;border-radius:12px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+
+    <div class="grid">
+      <div>
+        <label>Enrollment (Total Kids)</label>
+        <input id="enroll" type="number" min="1" />
+      </div>
+      <div>
+        <label>Select Category</label>
+        <select id="mode" onchange="toggleMode()">
+          <option value="">-- Select --</option>
+          <option value="rice">Rice</option>
+          <option value="eggs">Eggs</option>
+          <option value="chikki">Chikki</option>
+          <option value="all">All</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Rice Section -->
+    <div id="rice" class="section">
+      <div class="grid">
+        <div><label>Rice per Kid (grams)</label><input id="ricePerKid" type="number" step="1" /></div>
+        <div><label>Working Days</label><input id="workingDays" type="number" min="0" /></div>
+      </div>
+      <table id="riceOut" style="display:none">
+        <tr><th>Rice Required (kg)</th><th>25kg Bags</th></tr>
+        <tr><td id="riceKg">0</td><td id="riceBags">0</td></tr>
+      </table>
+    </div>
+
+    <!-- Eggs / Chikki Section -->
+    <div id="eggs" class="section">
+      <div class="grid">
+        <div><label>Phase 1 </label><input id="p1" type="number" min="0" /></div>
+        <div><label>Phase 2 </label><input id="p2" type="number" min="0" /></div>
+        <div><label>Phase 3 </label><input id="p3" type="number" min="0" /></div>
+        <div><label>Phase 4 </label><input id="p4" type="number" min="0" /></div>
+      </div>
+      <table id="out" style="display:none">
+        <tr><th>Phase</th><th>Total Required</th></tr>
+        <tbody id="tbody"></tbody>
+        <tr><th>Total</th><th id="total">0</th></tr>
+      </table>
+    </div>
+
+    <button class="btn" onclick="calculate()">Calculate</button>
+
+  </div>
+</div>
+
+<script>
+  function toggleMode(){
+    const mode = document.getElementById('mode').value;
+    const rice = document.getElementById('rice');
+    const eggs = document.getElementById('eggs');
+
+    rice.style.display = 'none';
+    eggs.style.display = 'none';
+
+    if(!mode) return;
+
+    if(mode === 'all'){
+      rice.style.display = 'block';
+      eggs.style.display = 'block';
+    } else if(mode === 'rice'){
+      rice.style.display = 'block';
+    } else {
+      eggs.style.display = 'block';
+    }
+  }
+
+  function calculate(){
+    const mode = document.getElementById('mode').value;
+    const enrollment = +document.getElementById('enroll').value || 0;
+
+    const doRice = (mode === 'rice' || mode === 'all');
+    const doEC = (mode === 'eggs' || mode === 'chikki' || mode === 'all');
+
+    if(doRice){
+      const rpk = +document.getElementById('ricePerKid').value || 0;
+      const days = +document.getElementById('workingDays').value || 0;
+      const kg = enrollment * (rpk/1000) * days;
+      document.getElementById('riceKg').textContent = kg.toFixed(2);
+      document.getElementById('riceBags').textContent = kg > 0 ? Math.ceil(kg / 25) : 0;
+      document.getElementById('riceOut').style.display = kg > 0 ? 'table' : 'none';
+    }
+
+    if(doEC){
+      const tbody = document.getElementById('tbody');
+      tbody.innerHTML = '';
+      let sum = 0;
+      for(let i = 1; i <= 4; i++){
+        const d = +document.getElementById('p'+i).value || 0;
+        const val = d * enrollment;
+        sum += val;
+        if(d){
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>Phase ${i}</td><td>${val}</td>`;
+          tbody.appendChild(tr);
+        }
+      }
+      document.getElementById('total').textContent = sum;
+      document.getElementById('out').style.display = 'table';
+    }
+  }
+
+  /* Test cases:
+     1) Enrollment=100, Rice per kid=100g, Days=20 → 200kg → 8 bags
+     2) Enrollment=50, Phase1=4 → 200 units
+     3) Mode=All → Rice + Eggs/Chikki sections visible
+  */
+</script>
+</body>
+</html>
