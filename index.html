@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -23,75 +22,89 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="card">
-
-    <div class="grid">
-      <div>
-        <label>Enrollment (Total Kids)</label>
-        <input id="enroll" type="number" min="1" />
-      </div>
-      <div>
-        <label>Select Category</label>
-        <select id="mode" onchange="toggleMode()">
-          <option value="">-- Select --</option>
-          <option value="rice">Rice</option>
-          <option value="eggs">Eggs</option>
-          <option value="chikki">Chikki</option>
-          <option value="all">All</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Rice Section -->
-    <div id="rice" class="section">
-      <div class="grid">
-        <div><label>Rice per Kid (grams)</label><input id="ricePerKid" type="number" step="1" /></div>
-        <div><label>Working Days</label><input id="workingDays" type="number" min="0" /></div>
-      </div>
-      <table id="riceOut" style="display:none">
-        <tr><th>Rice Required (kg)</th><th>25kg Bags</th></tr>
-        <tr><td id="riceKg">0</td><td id="riceBags">0</td></tr>
-      </table>
-    </div>
-
-    <!-- Eggs / Chikki Section -->
-    <div id="eggs" class="section">
-      <div class="grid">
-        <div><label>Phase 1 </label><input id="p1" type="number" min="0" /></div>
-        <div><label>Phase 2 </label><input id="p2" type="number" min="0" /></div>
-        <div><label>Phase 3 </label><input id="p3" type="number" min="0" /></div>
-        <div><label>Phase 4 </label><input id="p4" type="number" min="0" /></div>
-      </div>
-      <table id="out" style="display:none">
-        <tr><th>Phase</th><th>Total Required</th></tr>
-        <tbody id="tbody"></tbody>
-        <tr><th>Total</th><th id="total">0</th></tr>
-      </table>
-    </div>
-
-    <button class="btn" onclick="calculate()">Calculate</button>
-
+  <div class="card"><div class="grid">
+  <div>
+    <label>Enrollment (Total Kids)</label>
+    <input id="enroll" type="number" min="1" />
+  </div>
+  <div>
+    <label>Select Category</label>
+    <select id="mode" onchange="toggleMode()">
+      <option value="">-- Select --</option>
+      <option value="rice">Rice</option>
+      <option value="eggs">Eggs</option>
+      <option value="chikki">Chikki</option>
+      <option value="all">All</option>
+    </select>
   </div>
 </div>
 
-<script>
+<!-- Rice Section -->
+<div id="rice" class="section">
+  <div class="grid">
+    <div><label>Rice per Kid (grams)</label><input id="ricePerKid" type="number" step="1" /></div>
+    <div><label>Working Days</label><input id="workingDays" type="number" min="0" /></div>
+  </div>
+  <table id="riceOut" style="display:none">
+    <tr><th>Rice Required (kg)</th><th>25kg Bags</th></tr>
+    <tr><td id="riceKg">0</td><td id="riceBags">0</td></tr>
+  </table>
+</div>
+
+<!-- Eggs Section -->
+<div id="eggs" class="section">
+  <div class="grid">
+    <div><label>Egg Phase 1</label><input id="e1" type="number" min="0" /></div>
+    <div><label>Egg Phase 2</label><input id="e2" type="number" min="0" /></div>
+    <div><label>Egg Phase 3</label><input id="e3" type="number" min="0" /></div>
+    <div><label>Egg Phase 4</label><input id="e4" type="number" min="0" /></div>
+  </div>
+  <table id="eggOut" style="display:none">
+    <tr><th>Phase</th><th>Eggs Required</th></tr>
+    <tbody id="eggBody"></tbody>
+    <tr><th>Total</th><th id="eggTotal">0</th></tr>
+  </table>
+</div>
+
+<!-- Chikki Section -->
+<div id="chikki" class="section">
+  <div class="grid">
+    <div><label>Chikki Phase 1</label><input id="c1" type="number" min="0" /></div>
+    <div><label>Chikki Phase 2</label><input id="c2" type="number" min="0" /></div>
+  </div>
+  <table id="chikkiOut" style="display:none">
+    <tr><th>Phase</th><th>Chikkis Required</th></tr>
+    <tbody id="chikkiBody"></tbody>
+    <tr><th>Total</th><th id="chikkiTotal">0</th></tr>
+  </table>
+</div>
+
+<button class="btn" onclick="calculate()">Calculate</button>
+
+  </div>
+</div><script>
   function toggleMode(){
     const mode = document.getElementById('mode').value;
     const rice = document.getElementById('rice');
     const eggs = document.getElementById('eggs');
+    const chikki = document.getElementById('chikki');
 
     rice.style.display = 'none';
     eggs.style.display = 'none';
+    chikki.style.display = 'none';
 
     if(!mode) return;
 
     if(mode === 'all'){
       rice.style.display = 'block';
       eggs.style.display = 'block';
+      chikki.style.display = 'block';
     } else if(mode === 'rice'){
       rice.style.display = 'block';
-    } else {
+    } else if(mode === 'eggs'){
       eggs.style.display = 'block';
+    } else if(mode === 'chikki'){
+      chikki.style.display = 'block';
     }
   }
 
@@ -100,7 +113,8 @@
     const enrollment = +document.getElementById('enroll').value || 0;
 
     const doRice = (mode === 'rice' || mode === 'all');
-    const doEC = (mode === 'eggs' || mode === 'chikki' || mode === 'all');
+    const doEggs = (mode === 'eggs' || mode === 'all');
+    const doChikki = (mode === 'chikki' || mode === 'all');
 
     if(doRice){
       const rpk = +document.getElementById('ricePerKid').value || 0;
@@ -111,30 +125,48 @@
       document.getElementById('riceOut').style.display = kg > 0 ? 'table' : 'none';
     }
 
-    if(doEC){
-      const tbody = document.getElementById('tbody');
-      tbody.innerHTML = '';
+    if(doEggs){
+      const body = document.getElementById('eggBody');
+      body.innerHTML = '';
       let sum = 0;
-      for(let i = 1; i <= 4; i++){
-        const d = +document.getElementById('p'+i).value || 0;
-        const val = d * enrollment;
+      for(let i=1;i<=4;i++){
+        const d = +document.getElementById('e'+i).value || 0;
+        const val = d*enrollment;
         sum += val;
         if(d){
           const tr = document.createElement('tr');
           tr.innerHTML = `<td>Phase ${i}</td><td>${val}</td>`;
-          tbody.appendChild(tr);
+          body.appendChild(tr);
         }
       }
-      document.getElementById('total').textContent = sum;
-      document.getElementById('out').style.display = 'table';
+      document.getElementById('eggTotal').textContent = sum;
+      document.getElementById('eggOut').style.display = 'table';
+    }
+
+    if(doChikki){
+      const body = document.getElementById('chikkiBody');
+      body.innerHTML = '';
+      let sum = 0;
+      for(let i=1;i<=2;i++){
+        const d = +document.getElementById('c'+i).value || 0;
+        const val = d*enrollment;
+        sum += val;
+        if(d){
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>Phase ${i}</td><td>${val}</td>`;
+          body.appendChild(tr);
+        }
+      }
+      document.getElementById('chikkiTotal').textContent = sum;
+      document.getElementById('chikkiOut').style.display = 'table';
     }
   }
 
   /* Test cases:
      1) Enrollment=100, Rice per kid=100g, Days=20 → 200kg → 8 bags
-     2) Enrollment=50, Phase1=4 → 200 units
-     3) Mode=All → Rice + Eggs/Chikki sections visible
+     2) Enrollment=50, Egg Phase1=4 → 200 eggs
+     3) Enrollment=60, Chikki Phase2=5 → 300 chikkis
+     4) Mode=All → Rice + Eggs + Chikki sections visible
   */
-</script>
-</body>
+</script></body>
 </html>
